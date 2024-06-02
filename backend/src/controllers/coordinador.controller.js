@@ -1,3 +1,4 @@
+import Sala from '../models/salas.model.js';
 import { response } from "express";
 import { salas } from "../utils/salas.js";
 
@@ -29,12 +30,24 @@ try {
 }
 
 //Ver todas las salas
-export const verTodas = (req,res) => {
-    response.status(200).json({
-        message:"Lista de todas las salas",
-        data:salas
-    })
+export const verTodas = async (req,res) => {
+
+    try {
+        const todasSalas = await Sala.find();
+        response.status(200).json({
+            message: "Lista de salas:",
+            data:Sala
+        })
+    } catch (error) {
+        response.status(500).json({
+            message:error.message
+        })  
+    }
+    
+
+
 }
+
 
 //Actualizar una sala
 export const actualizarSala = (req,res) => {
