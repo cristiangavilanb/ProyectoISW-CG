@@ -5,10 +5,10 @@ import { salas } from "../utils/salas.js";
 
 
 //Ver una sala por id
-export const verSala = (req,res) => {
+export const verSala = async (req,res) => {
 try {
     const id = request.params.id;
-    const sala = salas.find((sala) => sala.id == id)
+    const sal = await Sala.findById(id);
     if(!sala){
         response.status(404).json({
             message:"Sala no encontrada",
@@ -18,9 +18,10 @@ try {
     }
     response.status(200).json({
         message:"La sala buscada es:",
-        data:sala
+        data:sal
 
     })
+
 } catch (error) {
     response.status(500).json({
         message:error.message
@@ -43,31 +44,37 @@ export const verTodas = async (req,res) => {
             message:error.message
         })  
     }
-    
+
 
 
 }
 
 
 //Actualizar una sala
-export const actualizarSala = (req,res) => {
+export const actualizarSala = async (req,res) => {
 try {
     const id = request.params.id;
-    const sala = request.body;
-    const index = salas.findIndex((sala) => sala.id == id);
-    if(index === -1){
+    const salaActualizada = request.body;
+    const sal = await Sala.findByIdAndUpdate(
+        id,
+        salaActualizada,
+        {new:true}
+
+    )
+    
+    if(!sal){
         response.status(404).json({
             message:"Sala no encontrada",
             data:null
         })
         return;
     }
-    salas[index]= sala;
+
     response.status(200).json({
-        message:"Sala actualizada correctamente",
-        data:sala
+        message:"La sala fue actualizada exitosamente.",
+        data:sal
+
     })
-    
 } catch (error) {
     response.status(500).json({
         message:error.message
